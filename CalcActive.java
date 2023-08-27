@@ -3,10 +3,12 @@ import java.awt.event.*;
 
 public class CalcActive{ // 主 GUI 布局
     private static void runGUI(CalcScreen thescreen){
+        // 获取屏幕尺寸
+        Dimension desktopSize = Toolkit.getDefaultToolkit().getScreenSize();
         // 窗体与关闭按钮
         Frame frame = new Frame();
         frame.setTitle("简易计算器0.4-加减乘除");
-        frame.setFont(new Font("宋体", Font.BOLD, 27));
+        frame.setFont(new Font("宋体", Font.BOLD, 28));
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e){
                 System.exit(0);
@@ -42,10 +44,16 @@ public class CalcActive{ // 主 GUI 布局
             buttons[i].addActionListener(myButtonListener);
             panel2.add(buttons[i]);
         }
+        // 暂时不支持括号功能，故移除
+        buttons[15].removeActionListener(myButtonListener);
+        buttons[17].removeActionListener(myButtonListener);
         // 绑定 frame
         frame.add(panel2,BorderLayout.CENTER);
         frame.pack();
+        frame.setLocation(0, 0);
+        frame.setLocation(desktopSize.width/2-100, desktopSize.height/2-100); 
         frame.setVisible(true);
+        
     }
     public static void main(String[] args){
         CalcScreen theScreen = new CalcScreen();
@@ -76,7 +84,7 @@ class CalcScreen{ // 计算器显示屏与按钮读入
             screen.append(c); // 添加运算符
             this.calc_ed = false;
         }
-        else if(c.equals("=")){ // 计算结果
+        else if(c.equals("=")){ // 等号的情况-计算结果
             // 简单计算功能
             SimpleCalcModule scm = new SimpleCalcModule();
             double calc_result = scm.calcFunc(screen.toString());
@@ -164,4 +172,23 @@ class SimpleCalcModule{ // 简单计算功能模块-仅支持加减乘除，不�
         return sum;
     }
     
+}
+
+class MyDialog{ // 简单对话框
+    public void error1(Frame dlg_frame,String dlg_title,String dlg_text){
+        Dialog dilDialog = new Dialog(dlg_frame, dlg_title, true);
+        Label lb = new Label(dlg_text);
+        lb.setFont(new Font("宋体", 0, 15));
+        // lb.setFont(dlg_frame.getFont());
+        dilDialog.setLayout(new GridLayout());
+        dilDialog.setLocation(dilDialog.getLocation().x,dilDialog.getLocation().y);//弹窗的坐标
+        dilDialog.add(lb);
+        dilDialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                dilDialog.dispose();
+            }
+        });
+        dilDialog.pack();
+        dilDialog.setVisible(true);
+    }
 }
